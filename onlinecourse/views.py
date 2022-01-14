@@ -140,7 +140,8 @@ def extract_answers(request):
 # you may implement it based on the following logic:
 def show_exam_result(request, course_id, submission_id):
     context = {}
-    total_score =0
+    total_possible_score = 0
+    total_obtained_score = 0
 
     # Get course and submission based on their ids
     course = get_object_or_404(Course, pk=course_id)
@@ -152,11 +153,14 @@ def show_exam_result(request, course_id, submission_id):
     # Get the selected choice ids from the submission record
     # For each selected choice, check if it is a correct answer or not
     for choice in choices:
+        question = choice.question
+        total_possible_score += question.grade
         if choice.is_correct:
             # Calculate the total score
-            total_score+=1
+            total_obtained_score+=question.grade
 
-    context['grade'] = total_score
+    context['grade'] = int(total_obtained_score/total_possible_score * 100)
     context['course'] = course
     context['selected_ids'] = choices
+    print(context['selected_ids'])
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)

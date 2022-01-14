@@ -59,12 +59,19 @@
                     <div class="form-group">
                         {% for choice in question.choice_set.all %}
                         <div class="form-check">
-                            <label class="form-check-label">
-                            <!-- <HINT> For each question choice, you may create a checkbox input like <input type="check" name="choice_{{choice.id}}" id="{{choice.id}}" ...> -->
-                            <input type="checkbox" name="choice_{{choice.id}}"
-                                   class="form-check-input" id="{{choice.id}}"
-                                   value="{{choice.id}}">{{ choice.choice_text }}
+                            {% if choice.is_correct and choice in selected_ids %}
+                            <label class="text-success">
+                                Correct answer: {{ choice.choice_text }}
                             </label>
+                            {% elif choice.is_correct %}
+                            <label class="text-warning">
+                                Not selected: {{ choice.choice_text }}
+                            </label>
+                            {% else %}
+                            <label class="text-dark">
+                                {{ choice.choice_text }}
+                            </label>
+                            {% endif %}
                         </div>
                         {% endfor %}
                     </div>
